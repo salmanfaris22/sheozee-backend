@@ -1,12 +1,10 @@
-package routes
+package router
 
-import (
-	"main/controllers"
+import "main/controllers"
 
-	"github.com/gin-gonic/gin"
-)
+func (i impel) Start() {
+	r := i.gin
 
-func UserRoutes(r *gin.Engine) {
 	var rout controllers.UserController
 
 	authRoute := r.Group("/auth")
@@ -22,10 +20,6 @@ func UserRoutes(r *gin.Engine) {
 		product.GET("/search", controllers.SearchProduct)
 		product.GET("/filter", controllers.FilterProduct)
 	}
-
-	//user:=r.Group("/"){
-	//
-	//}
 
 	r.POST("/logout", rout.LogOut)
 }

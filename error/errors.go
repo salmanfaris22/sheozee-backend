@@ -7,5 +7,5 @@ func Errors(ctx *gin.Context, err error, str string, status int) {
 		"message": str,
 		"error":   err.Error(),
 	})
-	return
+	ctx.Abort()
 }

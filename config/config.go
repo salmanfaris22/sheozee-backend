@@ -7,22 +7,20 @@ import (
 	"main/models"
 )
 
-var db *gorm.DB
-
-func ConnectDB() {
+func ConnectDB() *gorm.DB {
+	var db *gorm.DB
 	dsn := "host=localhost user=postgres password=poomon dbname=ecommerce port=5432 sslmode=disable TimeZone=Asia/Shanghai"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		fmt.Println("failed to connect to the database", err)
-		return
+		return nil
 	}
 
-	db.AutoMigrate(
+	err = db.AutoMigrate(
 		&models.User{},
 		&models.Address{},
 		&models.Cart{},
 		&models.CartItem{},
-		&models.JWTToken{},
 		&models.Order{},
 		&models.Product{},
 		&models.Review{},
@@ -30,9 +28,13 @@ func ConnectDB() {
 		&models.Wishlist{},
 		&models.WishlistItem{},
 	)
-
-}
-
-func GetDB() *gorm.DB {
+	if err != nil {
+		fmt.Println("cant AutoMigrate", err)
+		return nil
+	}
 	return db
 }
+
+//func GetDB() *gorm.DB {
+//	return db
+//}

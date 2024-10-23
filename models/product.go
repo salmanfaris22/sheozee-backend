@@ -14,7 +14,7 @@ type Product struct {
 	IsAvailable bool      `json:"is_available" gorm:"default:true"`
 	CompanyName string    `json:"company_name"`
 	Brand       string    `json:"brand"`
-	Size        string    `json:"size"`
+	Size        []string  `json:"size"`
 	Images      []string  `json:"images" gorm:"type:text[]"`
 	Category    string    `json:"category"`
 	CreatedAt   time.Time `json:"created_at"`

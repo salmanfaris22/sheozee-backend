@@ -50,7 +50,7 @@ func (uc UserController) Register(ctx *gin.Context) {
 		return
 	}
 	ctx.Set("userType", user.Role)
-	ctx.Set("user_Id", user.ID)
+	ctx.Set("user_Id", user.Role)
 	ctx.SetCookie("token", user.Token, int(24*time.Hour.Seconds()), "/", "localhost", true, true)
 	ctx.SetCookie("refreshToken", refresh, int(24*time.Hour.Seconds()), "/", "localhost", true, true)
 	ctx.JSON(200, gin.H{
@@ -94,8 +94,9 @@ func (uc UserController) Login(ctx *gin.Context) {
 		return
 	}
 	ctx.Set("userType", user.Role)
-	ctx.Set("user_Id", user.ID)
+	ctx.Set("user_Id", user.Role)
 	ctx.SetCookie("refreshToken", refresh, int(24*time.Hour.Seconds()), "/", "localhost", true, true)
+	ctx.SetCookie("token", user.Token, int(24*time.Hour.Seconds()), "/", "localhost", true, true)
 
 	ctx.JSON(200, gin.H{
 		"message":      "login successfully",
@@ -107,6 +108,7 @@ func (uc UserController) Login(ctx *gin.Context) {
 
 func (uc UserController) LogOut(ctx *gin.Context) {
 	ctx.SetCookie("token", "", -1, "/", "", false, true)
+	ctx.SetCookie("refreshToken", "", -1, "/", "", false, true)
 	ctx.JSON(200, gin.H{
 		"message": "logout successfully",
 	})

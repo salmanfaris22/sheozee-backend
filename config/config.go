@@ -28,6 +28,7 @@ func ConnectDB() *gorm.DB {
 		&models.Wishlist{},
 		&models.WishlistItem{},
 	)
+	fmt.Println("dd")
 	if err != nil {
 		fmt.Println("cant AutoMigrate", err)
 		return nil

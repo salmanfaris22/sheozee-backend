@@ -56,6 +56,7 @@ func (uc UserController) Register(ctx *gin.Context) {
 		"user":         user.FirstName,
 		"accesToken":   accesToken,
 		"refreshToken": user.Token,
+		"userID":       user.ID,
 	})
 }
 
@@ -98,6 +99,7 @@ func (uc UserController) Login(ctx *gin.Context) {
 		"user":         user.FirstName,
 		"refreshToken": user.Token,
 		"accesToken":   accesToken,
+		"userID":       user.ID,
 	})
 }
 

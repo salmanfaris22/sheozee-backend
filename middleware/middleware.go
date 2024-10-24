@@ -16,11 +16,11 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 
 	return func(ctx *gin.Context) {
 		token := ctx.GetHeader("Authorization")
-		if token == "" {
-			myerror.Errors(ctx, errors.New("unauthorized"), "Unauthorized User", http.StatusUnauthorized)
-			ctx.Abort()
-			return
-		}
+		//if token == "" {
+		//	myerror.Errors(ctx, errors.New("unauthorized"), "Unauthorized User", http.StatusUnauthorized)
+		//	ctx.Abort()
+		//	return
+		//}
 
 		valid, err := validateToken(token)
 		if err != nil || !valid {

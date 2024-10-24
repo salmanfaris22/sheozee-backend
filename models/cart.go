@@ -16,3 +16,12 @@ type CartItem struct {
 	ProductID uint `json:"product_id"`
 	Quantity  int  `json:"quantity" gorm:"default:1"`
 }
+
+type CartItemWithProduct struct {
+	ID        uint    `json:"id"`
+	CartID    uint    `json:"cart_id"`
+	ProductID uint    `json:"product_id"`
+	Quantity  int     `json:"quantity"`
+	Name      string  `json:"product_name"`
+	Price     float64 `json:"product_price"`
+}

@@ -37,8 +37,8 @@ func UserRoutes(r *gin.Engine) {
 	user := r.Group("/user", middleware.TokenAuthMiddleware())
 	{
 		var cart controllers.Cart
-		user.POST("/addCart", cart.AddToCart)
-		user.GET("/cartItems", cart.GetCartItems)
+		user.POST("/addCart/:id/item", cart.AddToCart)
+		user.GET("/cartItems/:id", cart.GetCartItems)
 	}
 
 	r.POST("/logout", rout.LogOut)

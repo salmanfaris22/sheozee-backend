@@ -90,4 +90,4 @@ func FilterProduct(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, products)
 }
 
-// When you initialize your DB connection
+// user Side

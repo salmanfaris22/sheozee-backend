@@ -1,14 +1,14 @@
 package main
 
 import (
-	"main/internel/app"
-	"main/internel/router"
+	"github.com/gin-gonic/gin"
+	"main/routes"
 )
 
 func main() {
 
-	r := router.NewRouter()
-	ap := app.NewApp(r)
-	ap.Start()
+	r := gin.Default()
+	routes.UserRoutes(r)
+	r.Run()
 
 }

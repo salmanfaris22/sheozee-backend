@@ -37,7 +37,7 @@ func (uc UserController) Register(ctx *gin.Context) {
 		return
 	}
 
-	refresh, err := user.SetRefreshToken()
+	accesToken, err := user.SetRefreshToken()
 	if err != nil {
 		myerror.Errors(ctx, err, "cant Set refresh Token", http.StatusInternalServerError)
 		return
@@ -49,15 +49,14 @@ func (uc UserController) Register(ctx *gin.Context) {
 		myerror.Errors(ctx, err, "invalid user informations", http.StatusBadRequest)
 		return
 	}
-	ctx.Set("userType", user.Role)
-	ctx.Set("user_Id", user.Role)
-	ctx.SetCookie("token", user.Token, int(24*time.Hour.Seconds()), "/", "localhost", true, true)
-	ctx.SetCookie("refreshToken", refresh, int(24*time.Hour.Seconds()), "/", "localhost", true, true)
+
+	ctx.SetCookie("refreshToken", user.Token, int(7*24*time.Hour), "/", "localhost", true, true)
+	ctx.SetCookie("token", accesToken, int(15*time.Minute), "/", "localhost", true, true)
 	ctx.JSON(200, gin.H{
 		"message":      "register successfully",
 		"user":         user.FirstName,
-		"token":        user.Token,
-		"refreshToken": refresh,
+		"accesToken":   accesToken,
+		"refreshToken": user.Token,
 	})
 }
 
@@ -82,7 +81,7 @@ func (uc UserController) Login(ctx *gin.Context) {
 		return
 	}
 
-	refresh, err := user.SetRefreshToken()
+	accesToken, err := user.SetRefreshToken()
 	if err != nil {
 		myerror.Errors(ctx, err, "cant Set refresh Token", http.StatusInternalServerError)
 		return
@@ -93,16 +92,13 @@ func (uc UserController) Login(ctx *gin.Context) {
 		myerror.Errors(ctx, err, "cant set token", http.StatusInternalServerError)
 		return
 	}
-	ctx.Set("userType", user.Role)
-	ctx.Set("user_Id", user.Role)
-	ctx.SetCookie("refreshToken", refresh, int(24*time.Hour.Seconds()), "/", "localhost", true, true)
-	ctx.SetCookie("token", user.Token, int(24*time.Hour.Seconds()), "/", "localhost", true, true)
-
+	ctx.SetCookie("refreshToken", user.Token, int(7*24*time.Hour), "/", "localhost", true, true)
+	ctx.SetCookie("token", accesToken, int(15*time.Minute), "/", "localhost", true, true)
 	ctx.JSON(200, gin.H{
 		"message":      "login successfully",
 		"user":         user.FirstName,
-		"refreshToken": refresh,
-		"token":        user.Token,
+		"refreshToken": user.Token,
+		"accesToken":   accesToken,
 	})
 }
 

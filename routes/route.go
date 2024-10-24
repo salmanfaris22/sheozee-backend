@@ -2,14 +2,14 @@ package routes
 
 import (
 	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"main/controllers"
 	"main/middleware"
-
-	"github.com/gin-gonic/gin"
 )
 
 func UserRoutes(r *gin.Engine) {
 	var rout controllers.UserController
+	var products controllers.Product
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
@@ -27,19 +27,18 @@ func UserRoutes(r *gin.Engine) {
 	}
 	product := r.Group("/products")
 	{
-		product.GET("/", controllers.GetAllProduct)
-		product.GET("/:id", controllers.GetProduct)
-		product.GET("/search", controllers.SearchProduct)
-		product.GET("/filter", controllers.FilterProduct)
+
+		product.GET("/", products.GetAllProduct)
+		product.GET("/:id", products.GetProduct)
+		product.GET("/search", products.SearchProduct)
+		product.GET("/filter", products.FilterProduct)
 	}
 
 	user := r.Group("/user", middleware.TokenAuthMiddleware())
 	{
-		user.GET("/hy", func(ctx *gin.Context) {
-			ctx.JSON(200, gin.H{
-				"message": "gru",
-			})
-		})
+		var cart controllers.Cart
+		user.POST("/addCart", cart.AddToCart)
+		user.GET("/cartItems", cart.GetCartItems)
 	}
 
 	r.POST("/logout", rout.LogOut)

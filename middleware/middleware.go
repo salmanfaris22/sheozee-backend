@@ -8,7 +8,6 @@ import (
 	"main/controllers"
 	myerror "main/error"
 	"net/http"
-	"time"
 )
 
 var secretKey = []byte("your_secret_key")
@@ -16,8 +15,8 @@ var secretKey = []byte("your_secret_key")
 func TokenAuthMiddleware() gin.HandlerFunc {
 
 	return func(ctx *gin.Context) {
-		token, err := ctx.Cookie("token")
-		if err != nil {
+		token := ctx.GetHeader("Authorization")
+		if token == "" {
 			myerror.Errors(ctx, errors.New("unauthorized"), "Unauthorized User", http.StatusUnauthorized)
 			ctx.Abort()
 			return
@@ -31,7 +30,6 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 				ctx.Abort()
 				return
 			}
-
 			// Validate and refresh the token
 			newToken, err := controllers.ValidateRefreshToken(refreshToken, ctx)
 			if err != nil {
@@ -41,7 +39,8 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 			}
 
 			if newToken != "" {
-				ctx.SetCookie("token", newToken, int(15*time.Minute), "/", "localhost", true, true)
+				//ctx.SetCookie("token", newToken, int(15*time.Minute), "/", "localhost", true, true)
+				ctx.Header("Authorization", newToken)
 				ctx.Next()
 				return
 			}
@@ -50,7 +49,6 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 			ctx.Abort()
 			return
 		}
-
 		ctx.Next()
 	}
 }

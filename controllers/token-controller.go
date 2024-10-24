@@ -2,20 +2,18 @@ package controllers
 
 import (
 	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"main/models"
 )
 
 func ValidateRefreshToken(token string, ctx *gin.Context) (string, error) {
-	userID, exists := ctx.Get("user_Id")
-	fmt.Println(userID)
-	if !exists {
+	userID, err := ctx.Cookie("userId")
+	if err != nil {
 		ctx.Abort()
 		return "", errors.New("Unauthorized")
 	}
 	var user models.User
-	err := db.Model(&models.User{}).Where("id=?", userID).First(&user).Error
+	err = db.Model(&models.User{}).Where("id=?", userID).First(&user).Error
 	if err != nil {
 		ctx.Abort()
 		return "", errors.New("Unauthorized")

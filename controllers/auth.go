@@ -9,6 +9,7 @@ import (
 	"main/services"
 	"main/validation"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -49,9 +50,7 @@ func (uc UserController) Register(ctx *gin.Context) {
 		myerror.Errors(ctx, err, "invalid user informations", http.StatusBadRequest)
 		return
 	}
-
-	ctx.SetCookie("refreshToken", user.Token, int(7*24*time.Hour), "/", "localhost", true, true)
-	ctx.SetCookie("token", accesToken, int(15*time.Minute), "/", "localhost", true, true)
+	SetCookieS(ctx, accesToken, user)
 	ctx.JSON(200, gin.H{
 		"message":      "register successfully",
 		"user":         user.FirstName,
@@ -92,8 +91,8 @@ func (uc UserController) Login(ctx *gin.Context) {
 		myerror.Errors(ctx, err, "cant set token", http.StatusInternalServerError)
 		return
 	}
-	ctx.SetCookie("refreshToken", user.Token, int(7*24*time.Hour), "/", "localhost", true, true)
-	ctx.SetCookie("token", accesToken, int(15*time.Minute), "/", "localhost", true, true)
+	SetCookieS(ctx, accesToken, user)
+	//ctx.SetCookie("token", accesToken, int(15*time.Minute), "/", "localhost", true, true)
 	ctx.JSON(200, gin.H{
 		"message":      "login successfully",
 		"user":         user.FirstName,
@@ -102,9 +101,20 @@ func (uc UserController) Login(ctx *gin.Context) {
 	})
 }
 
-func (uc UserController) LogOut(ctx *gin.Context) {
-	ctx.SetCookie("token", "", -1, "/", "", false, true)
+func SetCookieS(ctx *gin.Context, accestoken string, user models.User) {
+	ctx.Header("Authorization", accestoken)
+	userID := strconv.FormatUint(uint64(user.ID), 10)
+	ctx.SetCookie("userId", userID, int(7*24*time.Hour), "/", "localhost", true, true)
+	ctx.SetCookie("refreshToken", user.Token, int(7*24*time.Hour), "/", "localhost", true, true)
+}
+
+func ClearCookies(ctx *gin.Context) {
+	ctx.Header("Authorization", "")
+	ctx.SetCookie("userId", "", -1, "/", "", false, true)
 	ctx.SetCookie("refreshToken", "", -1, "/", "", false, true)
+}
+func (uc UserController) LogOut(ctx *gin.Context) {
+	ClearCookies(ctx)
 	ctx.JSON(200, gin.H{
 		"message": "logout successfully",
 	})

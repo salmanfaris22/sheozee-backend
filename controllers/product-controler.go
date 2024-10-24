@@ -10,7 +10,10 @@ import (
 	"strconv"
 )
 
-func GetAllProduct(ctx *gin.Context) {
+type Product struct {
+}
+
+func (p Product) GetAllProduct(ctx *gin.Context) {
 	var product []models.Product
 	db.Find(&product)
 	ctx.JSON(200, gin.H{
@@ -18,7 +21,7 @@ func GetAllProduct(ctx *gin.Context) {
 	})
 }
 
-func GetProduct(ctx *gin.Context) {
+func (p Product) GetProduct(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
@@ -42,7 +45,7 @@ func GetProduct(ctx *gin.Context) {
 	})
 }
 
-func SearchProduct(ctx *gin.Context) {
+func (p Product) SearchProduct(ctx *gin.Context) {
 	searchItem := ctx.Query("product")
 	var products []models.Product
 	err := db.Where("name ILIKE ? OR description ILIKE ? OR category ILIKE ? OR brand ILIKE ?",
@@ -57,7 +60,7 @@ func SearchProduct(ctx *gin.Context) {
 	})
 }
 
-func FilterProduct(ctx *gin.Context) {
+func (p Product) FilterProduct(ctx *gin.Context) {
 	var filter models.Filter
 	err := ctx.BindQuery(&filter)
 	if err != nil {
@@ -89,5 +92,3 @@ func FilterProduct(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, products)
 }
-
-// user Side
